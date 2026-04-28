@@ -991,6 +991,15 @@ def load_soul_md() -> Optional[str]:
         return None
 
 
+def get_soul_mtime() -> Optional[float]:
+    """Return SOUL.md modification time as Unix epoch, or None."""
+    try:
+        soul_path = get_hermes_home() / "SOUL.md"
+        return soul_path.stat().st_mtime if soul_path.exists() else None
+    except Exception:
+        return None
+
+
 def _load_hermes_md(cwd_path: Path) -> str:
     """.hermes.md / HERMES.md — walk to git root."""
     hermes_md_path = _find_hermes_md(cwd_path)

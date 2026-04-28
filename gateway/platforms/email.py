@@ -227,6 +227,7 @@ class EmailAdapter(BasePlatformAdapter):
 
         self._address = os.getenv("EMAIL_ADDRESS", "")
         self._password = os.getenv("EMAIL_PASSWORD", "")
+        self._from_address = os.getenv("EMAIL_FROM_ADDRESS", "") or self._address
         self._imap_host = os.getenv("EMAIL_IMAP_HOST", "")
         self._imap_port = int(os.getenv("EMAIL_IMAP_PORT", "993"))
         self._smtp_host = os.getenv("EMAIL_SMTP_HOST", "")
@@ -489,7 +490,8 @@ class EmailAdapter(BasePlatformAdapter):
     ) -> str:
         """Send an email via SMTP. Runs in executor thread."""
         msg = MIMEMultipart()
-        msg["From"] = self._address
+        msg["From"] = self._from_address
+        msg["Reply-To"] = self._from_address
         msg["To"] = to_addr
 
         # Thread context for reply
@@ -574,7 +576,8 @@ class EmailAdapter(BasePlatformAdapter):
     ) -> str:
         """Send an email with a file attachment via SMTP."""
         msg = MIMEMultipart()
-        msg["From"] = self._address
+        msg["From"] = self._from_address
+        msg["Reply-To"] = self._from_address
         msg["To"] = to_addr
 
         ctx = self._thread_context.get(to_addr, {})

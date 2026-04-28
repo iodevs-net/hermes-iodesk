@@ -106,7 +106,7 @@ from agent.model_metadata import (
 from agent.context_compressor import ContextCompressor
 from agent.subdirectory_hints import SubdirectoryHintTracker
 from agent.prompt_caching import apply_anthropic_cache_control
-from agent.prompt_builder import build_skills_system_prompt, build_context_files_prompt, build_environment_hints, load_soul_md, TOOL_USE_ENFORCEMENT_GUIDANCE, TOOL_USE_ENFORCEMENT_MODELS, GOOGLE_MODEL_OPERATIONAL_GUIDANCE, OPENAI_MODEL_EXECUTION_GUIDANCE
+from agent.prompt_builder import build_skills_system_prompt, build_context_files_prompt, build_environment_hints, load_soul_md, get_soul_mtime, TOOL_USE_ENFORCEMENT_GUIDANCE, TOOL_USE_ENFORCEMENT_MODELS, GOOGLE_MODEL_OPERATIONAL_GUIDANCE, OPENAI_MODEL_EXECUTION_GUIDANCE
 from agent.usage_pricing import estimate_usage_cost, normalize_usage
 from agent.codex_responses_adapter import (
     _derive_responses_function_call_id as _codex_derive_responses_function_call_id,
@@ -9753,6 +9753,21 @@ class AIAgent:
         # from disk that the model already knows about (it wrote them!),
         # producing a different system prompt and breaking the Anthropic
         # prefix cache.
+        # ── SOUL.md freshness ──
+        # Invalidate the cached system prompt when SOUL.md has been modified
+        # since the session started, so updated identity takes effect
+        # without needing to delete sessions or restart the container.
+        if self._cached_system_prompt is not None and self._session_db:
+            try:
+                _row = self._session_db.get_session(self.session_id)
+                if _row and _row.get("started_at"):
+                    _soul_mtime = get_soul_mtime()
+                    if _soul_mtime and _soul_mtime > _row["started_at"]:
+                        logger.info("SOUL.md changed — rebuilding system prompt for session %s", self.session_id)
+                        self._cached_system_prompt = None
+            except Exception:
+                pass
+
         if self._cached_system_prompt is None:
             stored_prompt = None
             if conversation_history and self._session_db:
@@ -9760,6 +9775,14 @@ class AIAgent:
                     session_row = self._session_db.get_session(self.session_id)
                     if session_row:
                         stored_prompt = session_row.get("system_prompt") or None
+                        # ── SOUL.md freshness (continuing session) ──
+                        # Even when loading a stored prompt from the DB,
+                        # check if SOUL.md is newer than the session.
+                        if stored_prompt and session_row.get("started_at"):
+                            _soul_mtime = get_soul_mtime()
+                            if _soul_mtime and _soul_mtime > session_row["started_at"]:
+                                logger.info("SOUL.md changed — discarding stored prompt for session %s", self.session_id)
+                                stored_prompt = None
                 except Exception:
                     pass  # Fall through to build fresh
 
