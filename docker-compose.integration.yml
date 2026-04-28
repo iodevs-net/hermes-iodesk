@@ -23,7 +23,6 @@ services:
   # Gateway - Messaging + AI agent loop
   # ---------------------------------------------------------------------------
   gateway:
-    build: .
     image: ghcr.io/iodevs-net/hermes-agent:latest
     container_name: hermes
     restart: unless-stopped
@@ -44,7 +43,7 @@ services:
   # Dashboard - Web UI (port 9119)
   # ---------------------------------------------------------------------------
   dashboard:
-    image: hermes-agent
+    image: ghcr.io/iodevs-net/hermes-agent:latest
     container_name: hermes-dashboard
     restart: unless-stopped
     depends_on:
