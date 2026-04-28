@@ -9,6 +9,7 @@ on:
       - 'uv.lock'
       - 'Dockerfile'
       - 'docker/**'
+      - 'docker-compose.integration.yml'
       - '.github/workflows/deploy-iodesk.yml'
 
 permissions:
@@ -67,21 +68,13 @@ jobs:
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
+          username: deploy-ci
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             set -e
+            cd /root/hermes-iodesk
+            git config --global --add safe.directory /root/hermes-iodesk
+            git pull origin main
             docker pull ghcr.io/iodevs-net/hermes-agent:latest
-            docker stop hermes 2>/dev/null || true
-            docker rm hermes 2>/dev/null || true
-            docker run -d --name hermes --restart unless-stopped --network host \
-              -e API_SERVER_HOST=0.0.0.0 \
-              -e API_SERVER_KEY=${{ secrets.API_SERVER_KEY }} \
-              -e EMAIL_HOME_CHANNEL=${{ secrets.EMAIL_HOME_CHANNEL }} \
-              -e EMAIL_FROM_ADDRESS=${{ secrets.EMAIL_FROM_ADDRESS }} \
-              -e OPENROUTER_API_KEY=${{ secrets.OPENROUTER_API_KEY }} \
-              -e HERMES_UID=1000 \
-              -e HERMES_GID=1000 \
-              -v /root/.hermes:/opt/data \
-              ghcr.io/iodevs-net/hermes-agent:latest gateway run
+            docker compose -f docker-compose.integration.yml up -d --force-recreate gateway dashboard
             docker image prune -f
