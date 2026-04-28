@@ -4,8 +4,13 @@
 # Use this file to run Hermes alongside ioDesk-3 and LocalAGI-ionet.
 #
 # Prerequisites:
-#   - ioDesk-3 containers running (docker compose --profile mcp up -d)
+#   - **ioDesk-3 must be running first** (creates the `iodesk-internal` Docker network)
 #   - LocalAGI-ionet containers running (optional)
+#
+# Deploy ordering:
+#   1. ioDesk-3: `docker compose up -d`  (creates network + MCP server + web)
+#   2. Hermes:    `docker compose -f docker-compose.integration.yml up -d`
+#   3. LocalAGI:  `docker compose -f docker-compose.prod.yaml up -d` (optional)
 #
 # Usage:
 #   HERMES_UID=$(id -u) HERMES_GID=$(id -g) docker compose \

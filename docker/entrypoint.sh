@@ -127,6 +127,9 @@ else:
 " 2>&1 | grep '^MCP:' || true
 fi
 
+# Re-apply restrictive permissions after MCP auto-config may have written token.
+chmod 640 "$HERMES_HOME/config.yaml" 2>/dev/null || true
+
 # Final exec: two supported invocation patterns.
 #
 #   docker run <image>                 -> exec `hermes` with no args (legacy default)
