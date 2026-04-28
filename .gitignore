@@ -64,6 +64,9 @@ web/public/ds-assets/
 .release_notes.md
 mini-swe-agent/
 
+# MCP tool metadata
+.serena/
+
 # Nix
 .direnv/
 .nix-stamps/

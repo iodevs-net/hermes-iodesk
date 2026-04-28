@@ -1,0 +1,64 @@
+# =============================================================================
+# ioDesk Integration - Docker Compose for Hermes Agent
+# =============================================================================
+# Use this file to run Hermes alongside ioDesk-3 and LocalAGI-ionet.
+#
+# Prerequisites:
+#   - ioDesk-3 containers running (docker compose --profile mcp up -d)
+#   - LocalAGI-ionet containers running (optional)
+#
+# Usage:
+#   HERMES_UID=$(id -u) HERMES_GID=$(id -g) docker compose \
+#     -f docker-compose.integration.yml up -d
+#
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # Gateway - Messaging + AI agent loop
+  # ---------------------------------------------------------------------------
+  gateway:
+    build: .
+    image: hermes-agent
+    container_name: hermes
+    restart: unless-stopped
+    volumes:
+      - ~/.hermes:/opt/data
+    environment:
+      - HERMES_UID=${HERMES_UID:-10000}
+      - HERMES_GID=${HERMES_GID:-10000}
+      # ioDesk MCP server URL (auto-configures MCP client on start)
+      - HERMES_IODESK_MCP_URL=${HERMES_IODESK_MCP_URL:-http://iodesk-mcp:8765/mcp}
+      # ioDesk MCP auth token (set in ioDesk .env as IODESK_MCP_TOKEN)
+      - HERMES_IODESK_MCP_TOKEN=${HERMES_IODESK_MCP_TOKEN:-}
+    command: ["gateway", "run"]
+    networks:
+      - iodesk-internal
+
+  # ---------------------------------------------------------------------------
+  # Dashboard - Web UI (port 9119)
+  # ---------------------------------------------------------------------------
+  dashboard:
+    image: hermes-agent
+    container_name: hermes-dashboard
+    restart: unless-stopped
+    depends_on:
+      - gateway
+    volumes:
+      - ~/.hermes:/opt/data
+    environment:
+      - HERMES_UID=${HERMES_UID:-10000}
+      - HERMES_GID=${HERMES_GID:-10000}
+    ports:
+      - "9119:9119"
+    # Bind to 0.0.0.0 inside container; port published to host above.
+    # For remote access: SSH tunnel (ssh -L 9119:localhost:9119) or
+    # reverse proxy with auth.
+    command: ["dashboard", "--host", "0.0.0.0", "--port", "9119"]
+    networks:
+      - iodesk-internal
+
+networks:
+  iodesk-internal:
+    name: iodesk-internal
+    external: true

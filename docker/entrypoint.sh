@@ -86,6 +86,37 @@ if [ -d "$INSTALL_DIR/skills" ]; then
     python3 "$INSTALL_DIR/tools/skills_sync.py"
 fi
 
+# ─── Auto-configure ioDesk MCP server ──────────────────────────────
+# When HERMES_IODESK_MCP_URL is set (e.g. http://iodesk-mcp:8765/mcp),
+# ensure the MCP server entry exists in config.yaml.
+if [ -n "$HERMES_IODESK_MCP_URL" ]; then
+    python3 -c "
+import os, yaml
+
+home = os.environ.get('HERMES_HOME', '/opt/data')
+cfg_path = os.path.join(home, 'config.yaml')
+url = os.environ.get('HERMES_IODESK_MCP_URL', '')
+token = os.environ.get('HERMES_IODESK_MCP_TOKEN', '')
+
+if not os.path.exists(cfg_path):
+    print('MCP: config.yaml not found, skipping')
+else:
+    with open(cfg_path, 'r') as f:
+        cfg = yaml.safe_load(f) or {}
+    servers = cfg.setdefault('mcp_servers', {})
+    if 'iodesk' in servers:
+        print('MCP: iodesk server already configured')
+    else:
+        entry = {'url': url, 'enabled': True}
+        if token:
+            entry['headers'] = {'Authorization': f'Bearer {token}'}
+        servers['iodesk'] = entry
+        with open(cfg_path, 'w') as f:
+            yaml.dump(cfg, f, default_flow_style=False)
+        print(f'MCP: configured iodesk server → {url}')
+" 2>&1 | grep '^MCP:' || true
+fi
+
 # Final exec: two supported invocation patterns.
 #
 #   docker run <image>                 -> exec `hermes` with no args (legacy default)
