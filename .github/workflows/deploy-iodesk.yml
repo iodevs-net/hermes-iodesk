@@ -53,7 +53,7 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            ghcr.io/iodevs-net/hermes-agent:${{ github.ref_name }}
+            # ghcr.io/iodevs-net/hermes-agent:${{ github.ref_name }}
             ghcr.io/iodevs-net/hermes-agent:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
