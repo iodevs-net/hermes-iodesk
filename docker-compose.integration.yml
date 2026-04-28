@@ -26,6 +26,8 @@ services:
     image: ghcr.io/iodevs-net/hermes-agent:latest
     container_name: hermes
     restart: unless-stopped
+    env_file:
+      - .env
     volumes:
       - ~/.hermes:/opt/data
     environment:
