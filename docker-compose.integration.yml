@@ -51,10 +51,9 @@ services:
       - HERMES_GID=${HERMES_GID:-10000}
     ports:
       - "9119:9119"
-    # Bind to 0.0.0.0 inside container; port published to host above.
-    # For remote access: SSH tunnel (ssh -L 9119:localhost:9119) or
-    # reverse proxy with auth.
-    command: ["dashboard", "--host", "0.0.0.0", "--port", "9119"]
+    # --insecure: allow bind to 0.0.0.0 (safe behind Docker port mapping + NAT).
+    # For internet-facing: use SSH tunnel or reverse proxy with auth instead.
+    command: ["dashboard", "--host", "0.0.0.0", "--port", "9119", "--insecure"]
     networks:
       - iodesk-internal
 
