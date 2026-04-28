@@ -86,6 +86,16 @@ if [ -d "$INSTALL_DIR/skills" ]; then
     python3 "$INSTALL_DIR/tools/skills_sync.py"
 fi
 
+# ─── Start OpenAI-compatible API bridge (background sidecar) ──────
+# Listens on port 8642 for /v1/chat/completions requests, using the
+# local hermes CLI.  No Docker socket required.
+if [ -f "$INSTALL_DIR/docker/hermes-bridge.py" ]; then
+    python3 "$INSTALL_DIR/docker/hermes-bridge.py" &
+    echo "[BRIDGE] Sidecar bridge started on port ${HERMES_BRIDGE_PORT:-8642}"
+else
+    echo "[BRIDGE] Skipping — docker/hermes-bridge.py not found"
+fi
+
 # ─── Auto-configure ioDesk MCP server ──────────────────────────────
 # When HERMES_IODESK_MCP_URL is set (e.g. http://iodesk-mcp:8765/mcp),
 # ensure the MCP server entry exists in config.yaml.
