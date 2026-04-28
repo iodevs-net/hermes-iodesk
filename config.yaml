@@ -1,0 +1,284 @@
+_config_version: 22
+agent:
+  gateway_notify_interval: 600
+  gateway_timeout: 1800
+  gateway_timeout_warning: 900
+  max_turns: 90
+  reasoning_effort: high
+  restart_drain_timeout: 60
+  service_tier: ''
+  system_prompt: You are a technical expert. Provide detailed, accurate technical
+    information.
+  tool_use_enforcement: auto
+approvals:
+  cron_mode: deny
+  mode: manual
+  timeout: 60
+auxiliary:
+  approval:
+    api_key: ''
+    base_url: ''
+    extra_body: {}
+    model: ''
+    provider: auto
+    timeout: 30
+  compression:
+    api_key: ''
+    base_url: ''
+    extra_body: {}
+    model: ''
+    provider: auto
+    timeout: 120
+  flush_memories:
+    api_key: ''
+    base_url: ''
+    extra_body: {}
+    model: ''
+    provider: auto
+    timeout: 30
+  mcp:
+    api_key: ''
+    base_url: ''
+    extra_body: {}
+    model: ''
+    provider: auto
+    timeout: 30
+  session_search:
+    api_key: ''
+    base_url: ''
+    extra_body: {}
+    max_concurrency: 3
+    model: ''
+    provider: auto
+    timeout: 30
+  skills_hub:
+    api_key: ''
+    base_url: ''
+    extra_body: {}
+    model: ''
+    provider: auto
+    timeout: 30
+  title_generation:
+    api_key: ''
+    base_url: ''
+    extra_body: {}
+    model: ''
+    provider: auto
+    timeout: 30
+  vision:
+    api_key: ''
+    base_url: https://openrouter.ai/api/v1
+    download_timeout: 30
+    extra_body: {}
+    model: nvidia/nemotron-nano-12b-v2-vl:free
+    provider: openrouter
+    timeout: 120
+  web_extract:
+    api_key: ''
+    base_url: ''
+    extra_body: {}
+    model: ''
+    provider: auto
+    timeout: 360
+bedrock:
+  discovery:
+    enabled: true
+    provider_filter: []
+    refresh_interval: 3600
+  guardrail:
+    guardrail_identifier: ''
+    guardrail_version: ''
+    stream_processing_mode: async
+    trace: disabled
+  region: ''
+browser:
+  allow_private_urls: false
+  camofox:
+    managed_persistence: false
+  cdp_url: ''
+  command_timeout: 30
+  inactivity_timeout: 120
+  record_sessions: false
+checkpoints:
+  enabled: true
+  max_snapshots: 50
+code_execution:
+  mode: project
+command_allowlist: []
+compression:
+  enabled: true
+  protect_last_n: 20
+  target_ratio: 0.2
+  threshold: 0.5
+context:
+  engine: compressor
+credential_pool_strategies: {}
+cron:
+  max_parallel_jobs: null
+  wrap_response: true
+dashboard:
+  theme: cyberpunk
+delegation:
+  api_key: ''
+  base_url: ''
+  max_concurrent_children: 3
+  max_iterations: 50
+  max_spawn_depth: 1
+  model: ''
+  orchestrator_enabled: true
+  provider: ''
+  reasoning_effort: ''
+discord:
+  allowed_channels: ''
+  auto_thread: true
+  channel_prompts: {}
+  free_response_channels: ''
+  reactions: true
+  require_mention: true
+  server_actions: ''
+display:
+  bell_on_complete: false
+  busy_input_mode: interrupt
+  compact: false
+  final_response_markdown: strip
+  inline_diffs: true
+  interim_assistant_messages: true
+  personality: kawaii
+  platforms:
+    api_server:
+      port: 8643
+  resume_display: full
+  show_cost: false
+  show_reasoning: false
+  skin: default
+  streaming: false
+  tool_preview_length: 0
+  tool_progress_command: false
+  tool_progress_overrides: {}
+  user_message_preview:
+    first_lines: 2
+    last_lines: 2
+fallback_providers: []
+file_read_max_chars: 100000
+honcho: {}
+hooks: {}
+hooks_auto_accept: false
+human_delay:
+  max_ms: 2500
+  min_ms: 800
+  mode: 'off'
+logging:
+  backup_count: 3
+  level: INFO
+  max_size_mb: 5
+mattermost:
+  channel_prompts: {}
+mcp_servers:
+  iodesk:
+    enabled: true
+    url: http://iodesk-mcp:8765/mcp
+memory:
+  memory_char_limit: 2200
+  memory_enabled: true
+  provider: ''
+  user_char_limit: 1375
+  user_profile_enabled: true
+model:
+  base_url: https://openrouter.ai/api/v1
+  default: nvidia/nemotron-3-super-120b-a12b:free
+  provider: openrouter
+network:
+  force_ipv4: false
+onboarding:
+  seen:
+    busy_input_prompt: true
+personalities: {}
+prefill_messages_file: ''
+privacy:
+  redact_pii: false
+providers: {}
+quick_commands: {}
+security:
+  redact_secrets: true
+  tirith_enabled: true
+  tirith_fail_open: true
+  tirith_path: tirith
+  tirith_timeout: 5
+  website_blocklist:
+    domains: []
+    enabled: false
+    shared_files: []
+skills:
+  external_dirs: []
+  inline_shell: false
+  inline_shell_timeout: 10
+  template_vars: true
+slack:
+  channel_prompts: {}
+stt:
+  enabled: true
+  local:
+    language: ''
+    model: base
+  mistral:
+    model: voxtral-mini-latest
+  openai:
+    model: whisper-1
+  provider: local
+telegram:
+  channel_prompts: {}
+terminal:
+  auto_source_bashrc: true
+  backend: local
+  container_cpu: 1
+  container_disk: 51200
+  container_memory: 5120
+  container_persistent: true
+  cwd: .
+  daytona_image: nikolaik/python-nodejs:python3.11-nodejs20
+  docker_env: {}
+  docker_forward_env: []
+  docker_image: nikolaik/python-nodejs:python3.11-nodejs20
+  docker_mount_cwd_to_workspace: false
+  docker_volumes: []
+  env_passthrough: []
+  modal_image: nikolaik/python-nodejs:python3.11-nodejs20
+  modal_mode: auto
+  persistent_shell: true
+  shell_init_files: []
+  singularity_image: docker://nikolaik/python-nodejs:python3.11-nodejs20
+  timeout: 180
+timezone: ''
+toolsets:
+- hermes-cli
+tts:
+  edge:
+    voice: en-US-AriaNeural
+  elevenlabs:
+    model_id: eleven_multilingual_v2
+    voice_id: pNInz6obpgDQGcFmaJgB
+  mistral:
+    model: voxtral-mini-tts-2603
+    voice_id: c69964a6-ab8b-4f8a-9465-ec0925096ec8
+  neutts:
+    device: cpu
+    model: neuphonic/neutts-air-q4-gguf
+    ref_audio: ''
+    ref_text: ''
+  openai:
+    model: gpt-4o-mini-tts
+    voice: alloy
+  provider: edge
+  xai:
+    bit_rate: 128000
+    language: en
+    sample_rate: 24000
+    voice_id: eve
+voice:
+  auto_tts: false
+  beep_enabled: true
+  max_recording_seconds: 120
+  record_key: ctrl+b
+  silence_duration: 3.0
+  silence_threshold: 200
+whatsapp: {}

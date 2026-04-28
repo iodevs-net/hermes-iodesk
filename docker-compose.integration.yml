@@ -30,6 +30,7 @@ services:
       - .env
     volumes:
       - ~/.hermes:/opt/data
+      - ./config.yaml:/opt/data/config.yaml
     environment:
       - HERMES_UID=${HERMES_UID:-10000}
       - HERMES_GID=${HERMES_GID:-10000}
@@ -52,6 +53,7 @@ services:
       - gateway
     volumes:
       - ~/.hermes:/opt/data
+      - ./config.yaml:/opt/data/config.yaml
     environment:
       - HERMES_UID=${HERMES_UID:-10000}
       - HERMES_GID=${HERMES_GID:-10000}
