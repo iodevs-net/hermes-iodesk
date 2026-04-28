@@ -72,7 +72,6 @@ jobs:
           script: |
             set -e
             docker pull ghcr.io/iodevs-net/hermes-agent:latest
-            docker tag ghcr.io/iodevs-net/hermes-agent:latest hermes-agent:latest
             docker stop hermes 2>/dev/null || true
             docker rm hermes 2>/dev/null || true
             docker run -d --name hermes --restart unless-stopped --network host \
@@ -84,5 +83,5 @@ jobs:
               -e HERMES_UID=1000 \
               -e HERMES_GID=1000 \
               -v /root/.hermes:/opt/data \
-              hermes-agent:latest gateway run
+              ghcr.io/iodevs-net/hermes-agent:latest gateway run
             docker image prune -f
